@@ -34,9 +34,11 @@ def main():
 
     threads = 1
     args = configure_run_args(config, hparams)
-    with mp.Pool(threads) as pool:
-        results = pool.starmap_async(run, args)
-        configs = results.get()
+    result_list = []
+    #with mp.Pool(threads) as pool:
+
+    results = run(args)
+    configs = results.get()
     save_training(df_file, configs)
 
 
