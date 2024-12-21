@@ -4,6 +4,7 @@ from zipfile import ZipFile
 
 import numpy as np
 import pooch
+import shutil
 
 import GravNN
 
@@ -96,28 +97,48 @@ class Earth(Planet):
                 )
             return new_name
 
-        self.EGM96 = pooch.retrieve(
-            url="https://earth-info.nga.mil/php/download.php?file=egm-96spherical",
-            known_hash="1f21ab8151c1b9fe25f483a4f6b78acdbf5306daf923725017b83d87a5f33472",
-            fname="EGM96_raw.zip",
-            path=os.path.dirname(GravNN.__file__) + "/Files/GravityModels/Earth/",
-            processor=format_EGM96_sh,
-        )
 
-        self.EGM2008 = pooch.retrieve(
-            url="https://earth-info.nga.mil/php/download.php?file=egm-08spherical",
-            known_hash="65a9072f337f156e8cbd76ffd773f536e6fb0de18697ea6726ecdb790fac0fbd",
-            fname="EGM2008_raw.zip",
-            path=os.path.dirname(GravNN.__file__) + "/Files/GravityModels/Earth/",
-            processor=format_EGM2008_sh,
-        )
+        qq = 0
+        fname = "EGM96_raw.zip"
+        src = "/home/snytav/GravityModels/"
+        src += fname
+        dst = os.path.dirname(GravNN.__file__) + "/Files/GravityModels/Earth"
+        dst += fname
+
+        try:
+            shutil.copy(src,dst)
+        except FileNotFoundError:
+            print("file not found")
+        self.EGM96 = dst
+        #     pooch.retrieve(
+        #     url="https://earth-info.nga.mil/php/download.php?file=egm-96spherical",
+        #     known_hash="1f21ab8151c1b9fe25f483a4f6b78acdbf5306daf923725017b83d87a5f33472",
+        #     fname="EGM96_raw.zip",
+        #     path=os.path.dirname(GravNN.__file__) + "/Files/GravityModels/Earth/",
+        #     processor=format_EGM96_sh,
+        # )
+
+        fname = "EGM2008.txt"
+        src = "/home/snytav/GravityModels/"
+        src += fname
+        dst = os.path.dirname(GravNN.__file__) + "/Files/GravityModels/Earth/"
+        dst += fname
+        shutil.copy(src, dst)
+        self.EGM2008 = dst
+        # pooch.retrieve(
+        #     url="https://earth-info.nga.mil/php/download.php?file=egm-08spherical",
+        #     known_hash="65a9072f337f156e8cbd76ffd773f536e6fb0de18697ea6726ecdb790fac0fbd",
+        #     fname="EGM2008_raw.zip",
+        #     path=os.path.dirname(GravNN.__file__) + "/Files/GravityModels/Earth/",
+        #     processor=format_EGM2008_sh,
+        # )
 
         self.obj_file = (
             os.path.dirname(GravNN.__file__) + "/Files/ShapeModels/Earth/Earth.obj"
         )
 
-        # Backwards compatability
-        # self.sh_file = self.EGM96
+        #Backwards compatability
+        self.sh_file = self.EGM96
         self.sh_file = self.EGM2008
 
 
