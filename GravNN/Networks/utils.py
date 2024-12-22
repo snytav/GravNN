@@ -75,13 +75,14 @@ def set_mixed_precision():
     Returns:
         module: mixed precision module
     """
-    from tensorflow.keras.mixed_precision import experimental as mixed_precision
-
-    policy = mixed_precision.Policy("mixed_float16")
-    mixed_precision.set_policy(policy)
+    # from tensorflow.keras.mixed_precision import experimental as mixed_precision
+    import tensorflow as tf
+    policy = tf.keras.mixed_precision.Policy('mixed_float16')
+    # policy = mixed_precision.Policy("mixed_float16")
+    tf.keras.mixed_precision.set_global_policy(policy)
     print("Compute dtype: %s" % policy.compute_dtype)
     print("Variable dtype: %s" % policy.variable_dtype)
-    return mixed_precision
+    return tf.keras.mixed_precision
 
 
 def _get_optimizer(name):
@@ -159,7 +160,7 @@ def _get_tf_dtype(name):
     import tensorflow as tf
 
     return {"float16": tf.float16, "float32": tf.float32, "float64": tf.float64}[
-        name.lower()
+        name[0].lower()
     ]
 
 
@@ -176,7 +177,7 @@ def populate_config_objects(config):
         dict: updated configuration dictionary with proper tensorflow objects
     """
 
-    config["dtype"] = [_get_tf_dtype(config["dtype"][0])]
+    config[0][0]["dtype"] = [_get_tf_dtype(config[0][0]["dtype"])]
 
     if "num_units" in config:
         for i in range(1, len(config["layers"][0]) - 1):
