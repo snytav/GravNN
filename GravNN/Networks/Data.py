@@ -510,7 +510,7 @@ class DataSet:
         radius_bounds = [self.config[0][0]["radius_min"], self.config[0][0]["radius_max"]]
         N_dist = self.config[0][0]["N_dist"]
 
-        grav_file = self.config.get("grav_file", [None])[0]
+        grav_file = self.config[0][0].get("grav_file", [None])
 
         # HACK: This is a hack to get the correct gravity file for the distribution
         obj_file = (
@@ -523,15 +523,15 @@ class DataSet:
             if grav_file is not None
             else self.config.get("sh_file", [None])[0]
         )
-        self.config["obj_file"] = [obj_file]
-        self.config["sh_file"] = [sh_file]
+        self.config[0][0]["obj_file"] = [obj_file]
+        self.config[0][0]["sh_file"] = [sh_file]
 
         if isinstance(planet, Planet):
             grav_file = sh_file
         else:
             grav_file = obj_file
 
-        distribution = self.config["distribution"][0]
+        distribution = self.config[0][0]["distribution"]
         if distribution.__name__ == "SurfaceDist":
             trajectory = distribution(
                 planet,
