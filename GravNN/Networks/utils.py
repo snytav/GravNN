@@ -179,7 +179,7 @@ def populate_config_objects(config):
 
     config[0][0]["dtype"] = [_get_tf_dtype(config[0][0]["dtype"])]
 
-    if "num_units" in config:
+    if "num_units" in config[0][0]:
         for i in range(1, len(config["layers"][0]) - 1):
             config["layers"][0][i] = config["num_units"][0]
         logging.info("Changed Layers to: " + str(config["layers"][0]))
@@ -273,23 +273,23 @@ def check_config_combos(config):
     """
     from GravNN.Networks.Constraints import pinn_00
 
-    if config["PINN_constraint_fcn"][0] != pinn_00:
-        if config["layers"][0][-1] != 1:
+    if config[0][0]["PINN_constraint_fcn"] != pinn_00:
+        if config[0][-1]["layers"] != 1:
             print(
                 "WARNING: The final layer for a PINN must have one output \
                     (the potential, U) -- changing automatically",
             )
-            config["layers"][0][-1] = 1
+            config[0][-1]["layers"] = 1
     else:
-        if config["layers"][0][-1] != 3:
-            config["layers"][0][-1] = 3
+        if config[0][-1]["layers"] != 3:
+            config[0][-1]["layers"] = 3
             print(
                 "WARNING: The final layer for a traditional network must have three \
                     outputs (the acceleration vector, a) -- changing automatically",
             )
-    if config["network_type"][0].__class__.__name__ == "InceptionNet":
+    if config[0][0]["network_type"].__class__.__name__ == "InceptionNet":
         assert (
-            len(config["layers"][0][1]) != 0
+            len(config[0][0]["layers"]) != 0
         ), "Inception network requires layers with multiple sizes, i.e. [[3, [3,7,11], \
             [3,7,11], 1]]"
 

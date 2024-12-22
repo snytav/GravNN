@@ -506,9 +506,9 @@ class DataSet:
         Returns:
             tuple: x,a,u training and validation data
         """
-        planet = self.config["planet"][0]
-        radius_bounds = [self.config["radius_min"][0], self.config["radius_max"][0]]
-        N_dist = self.config["N_dist"][0]
+        planet = self.config[0][0]["planet"]
+        radius_bounds = [self.config[0][0]["radius_min"], self.config[0][0]["radius_max"]]
+        N_dist = self.config[0][0]["N_dist"]
 
         grav_file = self.config.get("grav_file", [None])[0]
 
