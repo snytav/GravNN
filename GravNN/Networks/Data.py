@@ -532,7 +532,7 @@ class DataSet:
             grav_file = obj_file
 
         distribution = self.config[0][0]["distribution"]
-        if distribution.__name__ == "SurfaceDist":
+        if distribution[0].__name__ == "SurfaceDist":
             trajectory = distribution(
                 planet,
                 make_windows_path_posix(obj_file),
