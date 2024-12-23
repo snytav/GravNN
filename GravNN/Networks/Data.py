@@ -514,13 +514,13 @@ class DataSet:
 
         # HACK: This is a hack to get the correct gravity file for the distribution
         obj_file = (
-            grav_file
-            if grav_file is not None
+            grav_file[0]
+            if grav_file[0] is not None
             else self.config[0][0].get("obj_file", [None])[0]
         )
         sh_file = (
-            grav_file
-            if grav_file is not None
+            grav_file[0]
+            if grav_file[0] is not None
             else self.config.get("sh_file", [None])[0]
         )
         self.config[0][0]["obj_file"] = [obj_file]
