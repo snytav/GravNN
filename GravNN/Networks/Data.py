@@ -521,7 +521,7 @@ class DataSet:
         sh_file = (
             grav_file[0]
             if grav_file[0] is not None
-            else self.config.get("sh_file", [None])[0]
+            else self.config[0][0].get("sh_file", [None])[0]
         )
         self.config[0][0]["obj_file"] = [obj_file]
         self.config[0][0]["sh_file"] = [sh_file]
@@ -546,7 +546,7 @@ class DataSet:
                 N_dist,
                 **c_dict,
             )
-        get_analytic_data_fcn = self.config["gravity_data_fcn"][0]
+        get_analytic_data_fcn = self.config[0][0]["gravity_data_fcn"][0]
 
         x_unscaled, a_unscaled, u_unscaled = get_analytic_data_fcn(
             trajectory,
