@@ -516,7 +516,7 @@ class DataSet:
         obj_file = (
             grav_file
             if grav_file is not None
-            else self.config.get("obj_file", [None])[0]
+            else self.config[0][0].get("obj_file", [None])[0]
         )
         sh_file = (
             grav_file

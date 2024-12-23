@@ -17,8 +17,8 @@ class RandomDist(TrajectoryBase):
             points (int): number of samples
         """
         self.radius_bounds = radius_bounds
-        self.points = int(points)
-        self.celestial_body = celestial_body
+        self.points = int(points[0])
+        self.celestial_body = celestial_body[0]
 
         uniform_volume = kwargs.get("uniform_volume", False)
         if isinstance(uniform_volume, list):
