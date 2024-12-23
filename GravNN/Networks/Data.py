@@ -531,19 +531,20 @@ class DataSet:
         else:
             grav_file = obj_file
 
-        distribution = self.config[0][0]["distribution"]
-        if distribution[0].__name__ == "SurfaceDist":
+        distribution = self.config[0][0]["distribution"][0]
+        if distribution.__name__ == "SurfaceDist":
             trajectory = distribution(
                 planet,
                 make_windows_path_posix(obj_file),
                 # **self.config,
             )
         else:
+            c_dict = self.config[0][0]
             trajectory = distribution(
                 planet,
                 radius_bounds,
                 N_dist,
-                **self.config,
+                **c_dict,
             )
         get_analytic_data_fcn = self.config["gravity_data_fcn"][0]
 
