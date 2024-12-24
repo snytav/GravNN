@@ -307,10 +307,10 @@ def scale_by_constants(data_dict, config):
 
 
 def scale_by_non_dim_potential(data_dict, config):
-    x_transformer = config["x_transformer"][0]
-    a_transformer = config["a_transformer"][0]
-    u_transformer = config["u_transformer"][0]
-    a_bar_transformer = config["a_transformer"][0]
+    x_transformer = config[0][0]["x_transformer"][0]
+    a_transformer = config[0][0]["a_transformer"][0]
+    u_transformer = config[0][0]["u_transformer"][0]
+    a_bar_transformer = config[0][0]["a_transformer"][0]
 
     """
     non-dimensionalize by units, not by values
@@ -320,22 +320,22 @@ def scale_by_non_dim_potential(data_dict, config):
     """
     x_norm = np.linalg.norm(data_dict["x_train"], axis=1)
     # x_star = 10**np.mean(np.log10(x_norm)) # average magnitude
-    x_star = config["planet"][0].radius
+    x_star = config[0][0]["planet"][0].radius
 
     # scale time coordinate based on what makes the accelerations behave nicely
-    u_brill = config["mu"][0] / config["planet"][0].radius
+    u_brill = config[0][0]["mu"][0] / config[0][0]["planet"][0].radius
 
     # Make u_star approximately equal to value of the potential that must be learned.
     # If deg_removed == -1: u_brill
     # If deg_removed == 2: u_J2/u_brill
-    if config.get("fuse_models", [False])[0]:
+    if config[0][0].get("fuse_models", [False])[0]:
         x = data_dict["x_train"]
         r = np.linalg.norm(x, axis=1)
         u = x[:, 2] / r
 
-        a = config["planet"][0].radius
-        mu = config["mu"][0]
-        C20 = config.get("cBar", [np.zeros((3, 3))])[0][2, 0]
+        a = config[0][0]["planet"][0].radius
+        mu = config[0][0]["mu"][0]
+        C20 = config[0][0].get("cBar", [np.zeros((3, 3))])[0][2, 0]
 
         u_pm = mu / r
 
@@ -375,17 +375,17 @@ def scale_by_non_dim_potential(data_dict, config):
     u_val = u_transformer.transform(data_dict["u_val"])
 
     # can't just select max from non-dim x_train because config is dimensionalized
-    ref_radius_min = config.get("ref_radius_min", [x_norm.min()])[0]
-    ref_radius_max = config.get("ref_radius_max", [x_norm.max()])[0]
-    ref_radius_analytic = config.get("ref_radius_analytic", [x_norm.max()])[0]
+    ref_radius_min = config[0][0].get("ref_radius_min", [x_norm.min()])[0]
+    ref_radius_max = config[0][0].get("ref_radius_max", [x_norm.max()])[0]
+    ref_radius_analytic = config[0][0].get("ref_radius_analytic", [x_norm.max()])[0]
     x_vec = np.array([[ref_radius_min, ref_radius_max, ref_radius_analytic]])
     x_vec_normalized = x_transformer.transform(x_vec)
-    config["ref_radius_min"] = [x_vec_normalized[0, 0]]
-    config["ref_radius_max"] = [x_vec_normalized[0, 1]]
-    config["ref_radius_analytic"] = [x_vec_normalized[0, 2]]
+    config[0][0]["ref_radius_min"] = [x_vec_normalized[0, 0]]
+    config[0][0]["ref_radius_max"] = [x_vec_normalized[0, 1]]
+    config[0][0]["ref_radius_analytic"] = [x_vec_normalized[0, 2]]
 
-    if config.get("mu", [None])[0] is not None:
-        config["mu_non_dim"] = [config["mu"][0] * (t_star**2) / (x_star) ** 3]
+    if config[0][0].get("mu", [None])[0] is not None:
+        config[0][0]["mu_non_dim"] = [config[0][0]["mu"][0] * (t_star**2) / (x_star) ** 3]
 
     data_dict = {
         "x_train": x_train,
@@ -558,8 +558,8 @@ class DataSet:
         # This condition is for meant to correct for when gravity models didn't always
         # have the proper sign of the potential.
         # TODO: This should be removed prior to production.
-        deg_removed = self.config.get("deg_removed", -1)
-        remove_point_mass = self.config.get("remove_point_mass", False)
+        deg_removed = self.config[0][0].get("deg_removed", -1)
+        remove_point_mass = self.config[0][0].get("remove_point_mass", False)
         # if part of the model is removed (i.e. point mass) it is reasonable for some of
         # the potential to be > 0.0, so only rerun if there is no degree removed.
         if np.max(u_unscaled) > 0.0 and deg_removed == -1 and not remove_point_mass:
@@ -572,9 +572,9 @@ class DataSet:
             x_unscaled,
             a_unscaled,
             u_unscaled,
-            self.config["N_train"][0],
-            self.config["N_val"][0],
-            random_state=self.config.get("seed", [42])[0],
+            self.config[0][0]["N_train"][0],
+            self.config[0][0]["N_val"][0],
+            random_state=self.config[0][0].get("seed", [42])[0],
         )
 
         data_dict = {
@@ -612,11 +612,11 @@ class DataSet:
 
         data_dict = add_error(
             data_dict,
-            self.config.get("acc_noise", [0.0])[0],
+            self.config[0][0].get("acc_noise", [0.0])[0],
         )
 
         # Preprocessing
-        scale_by = self.config.get("scale_by", ["none"])[0]
+        scale_by = self.config[0][0].get("scale_by", ["none"])[0]
         if scale_by == "a":
             preprocess_fcn = scale_by_acceleration
         elif scale_by == "u":
@@ -694,7 +694,7 @@ class DataSet:
         onto the device (GPU) and slow calculations."""
         x_train, u_train, a_train, laplace_train, curl_train = train_data
         x_val, u_val, a_val, laplace_val, curl_val = val_data
-        pinn_constraint_fcn = config.get("PINN_constraint_fcn", ["pinn_00"])[0]
+        pinn_constraint_fcn = config[0][0].get("PINN_constraint_fcn", ["pinn_00"])[0]
 
         data = OrderedDict(
             {
@@ -741,8 +741,8 @@ class DataSet:
         y_train = hstack_2D(data)
         y_val = hstack_2D(val_data)
 
-        batch_size = config.get("batch_size", [len(y_train)])[0]
-        dtype = config.get("dtype", [tf.float64])[0]
+        batch_size = config[0][0].get("batch_size", [len(y_train)])[0]
+        dtype = config[0][0].get("dtype", [tf.float64])[0]
         dataset = self.generate_tensorflow_dataset(
             x_train,
             y_train,
