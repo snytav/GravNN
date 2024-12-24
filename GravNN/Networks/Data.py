@@ -552,7 +552,7 @@ class DataSet:
             trajectory,
             grav_file,
             parallel=True,
-            **self.config,
+            **self.config[0][0],
         )
 
         # This condition is for meant to correct for when gravity models didn't always
