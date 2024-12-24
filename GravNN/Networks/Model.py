@@ -35,7 +35,7 @@ class PINNGravityModel(tf.keras.Model):
                             what options are currently implemented.
             network (keras.Model): the actual network that will be trained.
         """
-        self.variable_cast = config.get("dtype", [tf.float32])[0]
+        self.variable_cast = config[0][0].get("dtype", [tf.float32])[0]
         super(PINNGravityModel, self).__init__(dtype=self.variable_cast)
         self.config = config
 

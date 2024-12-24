@@ -760,10 +760,10 @@ class DataSet:
         return dataset, val_dataset
 
     def add_transformers_to_config(self):
-        self.config["x_transformer"] = [self.transformers.get("x", None)]
-        self.config["u_transformer"] = [self.transformers.get("u", None)]
-        self.config["a_transformer"] = [self.transformers.get("a", None)]
-        self.config["a_bar_transformer"] = [self.transformers.get("a_bar", None)]
+        self.config[0][0]["x_transformer"] = [self.transformers.get("x", None)]
+        self.config[0][0]["u_transformer"] = [self.transformers.get("u", None)]
+        self.config[0][0]["a_transformer"] = [self.transformers.get("a", None)]
+        self.config[0][0]["a_bar_transformer"] = [self.transformers.get("a_bar", None)]
 
     def from_config(self, config):
         self.config = config
