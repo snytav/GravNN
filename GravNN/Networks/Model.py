@@ -37,7 +37,7 @@ class PINNGravityModel(tf.keras.Model):
         """
         self.variable_cast = config[0][0].get("dtype", [tf.float32])[0]
         super(PINNGravityModel, self).__init__(dtype=self.variable_cast)
-        self.config = config
+        self.config = config[0][0]
 
         self.mixed_precision = tf.constant(
             self.config["mixed_precision"][0],
