@@ -207,12 +207,12 @@ def transformer_network(inputs, **kwargs):
     """
     # adapted from `forward_pass` (~line 242): https://github.com/PredictiveIntelligenceLab/GradientPathologiesPINNs/blob/master/Helmholtz/Helmholtz2D_model_tf.py
 
-    layers = kwargs["layers"][0]
+    layers = kwargs["layers"]
     activation = kwargs["activation"][0]
     initializer = kwargs["initializer"][0]
     final_layer_initializer = kwargs["final_layer_initializer"][0]
     dtype = kwargs["dtype"][0]
-    transformer_units = layers[1]
+    transformer_units = layers
     seed = kwargs["seed"][0]
 
     x = inputs
@@ -230,7 +230,7 @@ def transformer_network(inputs, **kwargs):
     )(x)
 
     one = tf.constant(1.0, dtype=dtype, shape=(1, transformer_units))
-    for i in range(1, len(layers) - 1):
+    for i in range(1, layers - 1):
         x = tf.keras.layers.Dense(
             units=layers[i],
             activation=activation,
@@ -250,7 +250,7 @@ def transformer_network(inputs, **kwargs):
             if kwargs["dropout"][0] != 0.0:
                 x = tf.keras.layers.Dropout(kwargs["dropout"][0])(x)
     outputs = tf.keras.layers.Dense(
-        units=layers[-1],
+        units=layers,
         activation="linear",
         kernel_initializer=get_initalizer_fcn(final_layer_initializer, seed),
         dtype=dtype,
@@ -366,13 +366,13 @@ TraditionalNet = BasicNet
 
 
 def CustomNet(**kwargs):
-    layers = kwargs["layers"][0]
+    layers = kwargs["layers"]
     dtype = kwargs["dtype"][0]
 
     preprocess_args = get_preprocess_args(kwargs)
     preprocess_layers = get_preprocess_layers(kwargs)
 
-    inputs = tf.keras.Input(shape=(layers[0],), dtype=dtype)
+    inputs = tf.keras.Input(shape=(layers,), dtype=dtype)
     x = inputs
     for layer in preprocess_layers:
         x = layer(**preprocess_args)(x)
