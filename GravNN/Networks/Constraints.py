@@ -67,9 +67,15 @@ def pinn_P(f, x, training):
 
 
 def pinn_A(f, x, training):
+    n = 0
     with tf.GradientTape() as tape:
         tape.watch(x)
         u = f(x, training=training)      # breaks here
+        print(n,x)
+        print(u)
+
+        n = n+1
+
     u_x = -tape.gradient(u, x)
     return OrderedDict({"acceleration": u_x})
 
