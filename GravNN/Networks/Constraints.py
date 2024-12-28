@@ -65,9 +65,15 @@ def pinn_P(f, x, training):
     u = f(x, training=training)
     return OrderedDict({"potential": u})
 
-
+import numpy as np
 def pinn_A(f, x, training):
     n = 0
+    np.savetxt('input.txt',x.numpy(),fmt='%25.15e')
+    # o3 = np.loadtxt('inv_r_outputs.txt')
+    # o4 = f.layers[3](o3)
+
+
+
     with tf.GradientTape() as tape:
         tape.watch(x)
         u = f(x, training=training)      # breaks here

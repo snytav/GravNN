@@ -26,6 +26,9 @@ def load_network(config):
     else:
         network_fcn = _get_network_fcn(config["network_type"][0])
         network = network_fcn(**config)
+
+        for i, l in enumerate(network.layers):
+            print(i, l.name, l.input_shape, l.output_shape)
     return network
 
 
