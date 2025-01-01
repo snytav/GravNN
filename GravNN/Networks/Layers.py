@@ -423,12 +423,7 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
             trainable=self.trainable_tanh,
             initializer=tf.keras.initializers.Constant(value=self.r_max),
         )
-        self.k = self.add_weight(
-            "k",
-            shape=[1],
-            trainable=self.trainable_tanh,
-            initializer=tf.keras.initializers.Constant(value=self.k_init),
-        )
+
         super(EnforceBoundaryConditions, self).build(input_shapes)
 
     def call(self, features, u_nn, u_analytic):
