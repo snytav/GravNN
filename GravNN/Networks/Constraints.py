@@ -4,6 +4,8 @@ from collections import OrderedDict
 
 import tensorflow as tf
 
+from GravNN.Networks.Layers import global_epoch_number
+
 
 def get_PI_constraint(value):
     """Method responsible for getting all variables / methods used in the physics informed constraint.
@@ -72,15 +74,15 @@ def pinn_A(f, x, training):
     # o3 = np.loadtxt('inv_r_outputs.txt')
     # o4 = f.layers[3](o3)
 
-
+    from GravNN.Networks.Layers import global_epoch_number
 
     with tf.GradientTape() as tape:
         tape.watch(x)
         u = f(x, training=training)      # breaks here
-        print(n,x)
-        print(u)
+        print(global_epoch_number,' ++++++++++++++++++++++++++++++++++++++++++')
+        #print(u)
 
-        n = n+1
+        global_epoch_number = global_epoch_number+1
 
     u_x = -tape.gradient(u, x)
     return OrderedDict({"acceleration": u_x})

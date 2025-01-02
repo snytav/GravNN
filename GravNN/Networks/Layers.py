@@ -1,6 +1,8 @@
 import numpy as np
 import tensorflow as tf
 
+global_epoch_number = 0
+
 from GravNN.Networks.Losses import norm
 
 
@@ -163,10 +165,14 @@ class Cart2PinesSphLayer(tf.keras.layers.Layer):
         # s = X / r  # sin(beta)
         # t = Y / r  # sin(gamma)
         # u = Z / r  # sin(alpha)
+        np.savetxt('cart_'+str(global_epoch_number)+'_inputs.txt',
+                   inputs,fmt='%15.5e')
 
         r = norm(inputs)
         stu = tf.math.divide_no_nan(inputs, r)
         spheres = tf.concat([r, stu], axis=1)
+        np.savetxt('cart_' + str(global_epoch_number) + '_outputs.txt',
+                   spheres, fmt='%15.5e')
         return spheres
 
     def get_config(self):
@@ -179,9 +185,13 @@ class InvRLayer(tf.keras.layers.Layer):
         super(InvRLayer, self).__init__(dtype=dtype)
 
     def call(self, inputs):
+        np.savetxt('inv_r_' + str(global_epoch_number) + '_inputs.txt',
+                   inputs, fmt='%15.5e')
         r = inputs[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
         spheres = tf.concat([r_cap, r_inv_cap, inputs[:, 1:4]], axis=1)
+        np.savetxt('inv_r_' + str(global_epoch_number) + '_outputs.txt',
+                   spheres[:,:3], fmt='%15.5e')
         return spheres[:,:3]
 
     def get_config(self):
@@ -237,6 +247,8 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         super(AnalyticModelLayer, self).build(input_shapes)
 
     def call(self, inputs):
+        np.savetxt('analytic_' + str(global_epoch_number) + '_inputs.txt',
+                   inputs, fmt='%15.5e')
         r = inputs[:, 0:1]
         u = inputs[:, 3:4]
 
@@ -270,6 +282,8 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         # error.
         h_external = H(r, self.r_external, self.k_external)
         u_analytic = u_analytic * h_external
+        np.savetxt('analytic_' + str(global_epoch_number) + '_outputs.txt',
+                   u_analytic, fmt='%15.5e')
 
         return u_analytic
 
@@ -337,6 +351,11 @@ class ScaleNNPotential(tf.keras.layers.Layer):
         self.e = tf.constant(e, dtype=dtype).numpy()
 
     def call(self, features, u_nn):
+        np.savetxt('scale_nn_features_' + str(global_epoch_number) + '_inputs.txt',
+                   features, fmt='%15.5e')
+        np.savetxt('scale_nn_u_nn_' + str(global_epoch_number) + '_inputs.txt',
+                   u_nn, fmt='%15.5e')
+
         r = features[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
 
@@ -360,6 +379,8 @@ class ScaleNNPotential(tf.keras.layers.Layer):
         # scale = blend_smooth(r, scale_internal, scale_external, R_trans, 2*R_trans)
         # u_final = u_nn * scale
         u_final = u_nn * scale_external
+        np.savetxt('scale_nn_' + str(global_epoch_number) + '_outputs.txt',
+                   u_final, fmt='%15.5e')
 
         return u_final
 
@@ -385,8 +406,15 @@ class FuseModels(tf.keras.layers.Layer):
         self.fuse = tf.constant(int(fuse_models), dtype=dtype).numpy()
 
     def call(self, u_nn, u_analytic):
+        np.savetxt('fuse_u_nn_' + str(global_epoch_number) + '_inputs.txt',
+                   u_nn, fmt='%15.5e')
+        np.savetxt('fuse_u_analytic_' + str(global_epoch_number) + '_inputs.txt',
+                   u_analytic, fmt='%15.5e')
         fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
         u = u_nn + fuse_vector * u_analytic
+        np.savetxt('fuse_' + str(global_epoch_number) + '_outputs.txt',
+                   u, fmt='%15.5e')
+
         return u
 
     def get_config(self):
@@ -432,12 +460,19 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         super(EnforceBoundaryConditions, self).build(input_shapes)
 
     def call(self, features, u_nn, u_analytic):
+        np.savetxt('enforce_u_nn_' + str(global_epoch_number) + '_inputs.txt',
+                   u_nn, fmt='%15.5e')
+        np.savetxt('enforce_u_analytic_' + str(global_epoch_number) + '_inputs.txt',
+                   u_analytic, fmt='%15.5e')
+
         if not self.enforce_bc:
             return u_nn
         r = features[:, 0:1]
         h = H(r, self.radius, self.k)
         g = G(r, self.radius, self.k)
         u_model = g * u_nn + h * u_analytic
+        np.savetxt('enforce_' + str(global_epoch_number) + '_outputs.txt',
+                   u_model, fmt='%15.5e')
         return u_model
 
     def get_config(self):
