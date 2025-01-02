@@ -163,7 +163,8 @@ class Cart2PinesSphLayer(tf.keras.layers.Layer):
         # s = X / r  # sin(beta)
         # t = Y / r  # sin(gamma)
         # u = Z / r  # sin(alpha)
-
+        if not tf.is_symbolic_tensor(inputs):
+            np.savextxt('cart_input.txt',inputs,fmt='%15.5e')
         r = norm(inputs)
         stu = tf.math.divide_no_nan(inputs, r)
         spheres = tf.concat([r, stu], axis=1)
@@ -222,9 +223,8 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         self.trainable_tanh = kwargs.get("trainable_tanh", [True])[0]
 
     def build(self, input_shapes):
-        self.k_external = self.add_weight(
-            "k_external",
-            shape=[1],
+        self.k_external = self.add_weight(name="k_external",
+            shape=1,
             trainable=False,
             initializer=tf.keras.initializers.Constant(value=0.5),
         )
