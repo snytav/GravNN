@@ -4,7 +4,7 @@ import tensorflow as tf
 from GravNN.Networks.Losses import norm
 
 
-global_epoch_number = 0
+
 
 def get_preprocess_layer_fcn(layer_key):
     return {
@@ -165,6 +165,7 @@ class Cart2PinesSphLayer(tf.keras.layers.Layer):
         # s = X / r  # sin(beta)
         # t = Y / r  # sin(gamma)
         # u = Z / r  # sin(alpha)
+        from GravNN.Networks.Constraints import global_epoch_number
 
         try:
             np.savetxt('cart_input_'+'{:05d}'.format(global_epoch_number)+'.txt', inputs,fmt='%25.15e')
@@ -185,6 +186,10 @@ class InvRLayer(tf.keras.layers.Layer):
         super(InvRLayer, self).__init__(dtype=dtype)
 
     def call(self, inputs):
+        try:
+            np.savetxt('inv_r_input_' + '{:05d}'.format(global_epoch_number) + '.txt', inputs, fmt='%25.15e')
+        except:
+            print("An exception occurred")
         r = inputs[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
         spheres = tf.concat([r_cap, r_inv_cap, inputs[:, 1:4]], axis=1)
@@ -444,6 +449,7 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         h = H(r, self.radius, self.k)
         g = G(r, self.radius, self.k)
         u_model = g * u_nn + h * u_analytic
+
         return u_model
 
     def get_config(self):
