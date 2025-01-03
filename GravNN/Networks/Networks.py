@@ -391,7 +391,7 @@ def CustomNet(**kwargs):
     u = EnforceBoundaryConditions(**kwargs)(features, u_fused, u_analytic)
 
     model = tf.keras.Model(inputs=inputs, outputs=u)
-    super(tf.keras.Model, model).__init__(dtype=dtype)
+    super(tf.keras.Model, model).__init__(dtype)
 
     return model
 
