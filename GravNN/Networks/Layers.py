@@ -4,6 +4,8 @@ import tensorflow as tf
 from GravNN.Networks.Losses import norm
 
 
+global_epoch_number = 0
+
 def get_preprocess_layer_fcn(layer_key):
     return {
         "pines": Cart2PinesSphLayer,
@@ -165,7 +167,7 @@ class Cart2PinesSphLayer(tf.keras.layers.Layer):
         # u = Z / r  # sin(alpha)
 
         try:
-            np.savetxt('cart.txt', inputs,fmt='%25.15e')
+            np.savetxt('cart_input_'+'{:05d}'.format(global_epoch_number)+'.txt', inputs,fmt='%25.15e')
         except:
             print("An exception occurred")
         r = norm(inputs)
