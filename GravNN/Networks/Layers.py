@@ -164,6 +164,10 @@ class Cart2PinesSphLayer(tf.keras.layers.Layer):
         # t = Y / r  # sin(gamma)
         # u = Z / r  # sin(alpha)
 
+        try:
+            np.savetxt('cart.txt', inputs,fmt='%25.15e')
+        except:
+            print("An exception occurred")
         r = norm(inputs)
         stu = tf.math.divide_no_nan(inputs, r)
         spheres = tf.concat([r, stu], axis=1)
