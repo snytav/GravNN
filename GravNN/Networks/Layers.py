@@ -224,12 +224,12 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
 
     def build(self, input_shapes):
         self.k_external = self.add_weight(name="k_external",
-            shape=1,
+            shape=[1],
             trainable=False,
             initializer=tf.keras.initializers.Constant(value=0.5),
         )
         self.r_external = self.add_weight(
-            "r_external",
+            name="r_external",
             shape=[1],
             trainable=False,
             initializer=tf.keras.initializers.Constant(value=0.0),
