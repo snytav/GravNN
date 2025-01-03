@@ -418,13 +418,13 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
 
     def build(self, input_shapes):
         self.radius = self.add_weight(
-            "radius",
+            name="radius",
             shape=[1],
             trainable=self.trainable_tanh,
             initializer=tf.keras.initializers.Constant(value=self.r_max),
         )
         self.k = self.add_weight(
-            "k",
+            name="k",
             shape=[1],
             trainable=self.trainable_tanh,
             initializer=tf.keras.initializers.Constant(value=self.k_init),
