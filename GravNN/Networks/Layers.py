@@ -174,6 +174,11 @@ class Cart2PinesSphLayer(tf.keras.layers.Layer):
         r = norm(inputs)
         stu = tf.math.divide_no_nan(inputs, r)
         spheres = tf.concat([r, stu], axis=1)
+        try:
+            np.savetxt('cart_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres,fmt='%25.15e')
+        except:
+            print("An exception occurred")
+
         return spheres
 
     def get_config(self):
