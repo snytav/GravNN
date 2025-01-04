@@ -358,6 +358,15 @@ class ScaleNNPotential(tf.keras.layers.Layer):
         self.e = tf.constant(e, dtype=dtype).numpy()
 
     def call(self, features, u_nn):
+        from GravNN.Networks.Constraints import global_epoch_number
+        try:
+            np.savetxt('scale_nn_features_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       features, fmt='%25.15e')
+            np.savetxt('scale_nn_u_nn_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       u_nn, fmt='%25.15e')
+        except:
+            print("An exception occurred")
+
         r = features[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
 
