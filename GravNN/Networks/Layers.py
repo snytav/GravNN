@@ -299,6 +299,13 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         h_external = H(r, self.r_external, self.k_external)
         u_analytic = u_analytic * h_external
 
+        try:
+            np.savetxt('analytic_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       u_analytic, fmt='%25.15e')
+        except:
+            print("An exception occurred")
+
+
         return u_analytic
 
     def get_config(self):
