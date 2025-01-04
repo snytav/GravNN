@@ -258,6 +258,13 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         super(AnalyticModelLayer, self).build(input_shapes)
 
     def call(self, inputs):
+        from GravNN.Networks.Constraints import global_epoch_number
+        try:
+            np.savetxt('analytic_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       inputs, fmt='%25.15e')
+        except:
+            print("An exception occurred")
+
         r = inputs[:, 0:1]
         u = inputs[:, 3:4]
 
@@ -390,6 +397,12 @@ class ScaleNNPotential(tf.keras.layers.Layer):
         # scale = blend_smooth(r, scale_internal, scale_external, R_trans, 2*R_trans)
         # u_final = u_nn * scale
         u_final = u_nn * scale_external
+        try:
+            np.savetxt('scale_nn_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       u_final, fmt='%25.15e')
+
+        except:
+            print("An exception occurred")
 
         return u_final
 
