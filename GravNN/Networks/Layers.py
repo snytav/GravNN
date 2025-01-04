@@ -191,6 +191,7 @@ class InvRLayer(tf.keras.layers.Layer):
         super(InvRLayer, self).__init__(dtype=dtype)
 
     def call(self, inputs):
+        from GravNN.Networks.Constraints import global_epoch_number
         try:
             np.savetxt('inv_r_input_' + '{:05d}'.format(global_epoch_number) + '.txt', inputs, fmt='%25.15e')
         except:
@@ -198,6 +199,10 @@ class InvRLayer(tf.keras.layers.Layer):
         r = inputs[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
         spheres = tf.concat([r_cap, r_inv_cap, inputs[:, 1:4]], axis=1)
+        try:
+            np.savetxt('inv_r_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres[:,:3],fmt='%25.15e')
+        except:
+            print("An exception occurred")
         return spheres[:,:3]
 
     def get_config(self):
