@@ -82,6 +82,7 @@ def pinn_A(f, x, training):
     with tf.GradientTape() as tape:
         tape.watch(x)
         u = f(x, training=training)      # breaks here
+        global global_epoch_number
         global_epoch_number = global_epoch_number + 1
         print(u)
 
