@@ -446,6 +446,13 @@ class FuseModels(tf.keras.layers.Layer):
             print("An exception occurred")
         fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
         u = u_nn + fuse_vector * u_analytic
+        try:
+            np.savetxt('fuse_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       u, fmt='%25.15e')
+        except:
+            print("An exception occurred")
+        fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
+
         return u
 
     def get_config(self):
@@ -491,6 +498,16 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         super(EnforceBoundaryConditions, self).build(input_shapes)
 
     def call(self, features, u_nn, u_analytic):
+        from GravNN.Networks.Constraints import global_epoch_number
+        try:
+            np.savetxt('enforce_input_analytic_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       u_analytic, fmt='%25.15e')
+            np.savetxt('enforce_input_u_nn_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       u_nn, fmt='%25.15e')
+
+        except:
+            print("An exception occurred")
+
         if not self.enforce_bc:
             return u_nn
         r = features[:, 0:1]
@@ -498,6 +515,11 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         g = G(r, self.radius, self.k)
         u_model = g * u_nn + h * u_analytic
 
+        try:
+            np.savetxt('enforce_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       u_model, fmt='%25.15e')
+        except:
+            print("An exception occurred")
         return u_model
 
     def get_config(self):
