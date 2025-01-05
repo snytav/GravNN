@@ -435,6 +435,15 @@ class FuseModels(tf.keras.layers.Layer):
         self.fuse = tf.constant(int(fuse_models), dtype=dtype).numpy()
 
     def call(self, u_nn, u_analytic):
+        from GravNN.Networks.Constraints import global_epoch_number
+
+        try:
+            np.savetxt('fuse_input_u_nn_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       u_nn, fmt='%25.15e')
+            np.savetxt('fuse_input_u_analytic_' + '{:05d}'.format(global_epoch_number) + '.txt',
+                       u_analytic, fmt='%25.15e')
+        except:
+            print("An exception occurred")
         fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
         u = u_nn + fuse_vector * u_analytic
         return u
