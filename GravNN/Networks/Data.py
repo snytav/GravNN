@@ -675,10 +675,13 @@ class DataSet:
 
         dataset = tf.data.Dataset.from_tensor_slices((x, y))
         for i, elem in enumerate(dataset):
-            x = elem[0].numpy()
+            xx = elem[1].numpy()
+            ind521 = np.where(xx == -0.52217513)
+
+
             print(i, elem[0].numpy())
-            print(i,x[-1])
-            
+            print(i,xx[-1],ind521)
+
         if shuffle:
             dataset = dataset.shuffle(len(x), seed=1234)
         dataset = dataset.batch(
