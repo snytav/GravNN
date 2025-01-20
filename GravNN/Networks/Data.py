@@ -679,8 +679,8 @@ class DataSet:
             ind521 = np.where(xx == -0.52217513)
 
 
-            print(i, elem[0].numpy())
-            print(i,xx[-1],ind521)
+            # print(i, elem[0].numpy())
+            # print(i,xx[-1],ind521)
 
         if shuffle:
             dataset = dataset.shuffle(len(x), seed=1234)

@@ -174,6 +174,7 @@ class PINNGravityModel(tf.keras.Model):
 
     # Training
     def train_step_fcn(self, data):
+        print('in train_step_fcn')
         x, y = data
 
         y_dict = format_training_data(y, self.constraint)
@@ -230,12 +231,14 @@ class PINNGravityModel(tf.keras.Model):
             ],
         )
 
+        print('out train_step_fcn')
         return {
             "w_loss": loss,
             "loss": tf.reduce_sum(loss_i),
             "percent_mean": tf.reduce_mean(losses.get("acceleration_percent", [0])),
             "percent_max": tf.reduce_max(losses.get("acceleration_percent", [0])),
         }
+
 
     def test_step_fcn(self, data):
         x, y = data
