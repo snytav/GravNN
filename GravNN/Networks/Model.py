@@ -194,7 +194,7 @@ class PINNGravityModel(tf.keras.Model):
             losses = MetaLoss(y_hat_dict, y_dict, self.loss_fcn_list)
             loss_i = tf.stack([tf.reduce_mean(loss) for loss in losses.values()], 0)
             loss = tf.reduce_sum(self.w_loss * loss_i)
-            print(loss)
+            print('loss ',loss.numpy())
             loss = self.optimizer.get_scaled_loss(loss)
             # tf.print(loss_i)
             # compute a subset of the losses for w_loss
