@@ -84,7 +84,7 @@ def pinn_A(f, x, training):
         u = f(x, training=training)      # breaks here
         from GravNN.Networks.Constraints import global_epoch_number
         global_epoch_number = global_epoch_number + 1
-        print(u)
+        #print(u)
 
 
 
