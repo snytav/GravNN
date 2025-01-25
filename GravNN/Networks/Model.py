@@ -293,7 +293,7 @@ class PINNGravityModel(tf.keras.Model):
         return history
 
     # JIT wrappers
-    @tf.function(jit_compile=True, reduce_retracing=True)
+    @tf.function(experimental_compile=True, reduce_retracing=True)
     def wrap_train_step_jit(self, data):
         return self.train_step_fcn(data)
 
