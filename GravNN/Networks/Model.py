@@ -305,7 +305,7 @@ class PINNGravityModel(tf.keras.Model):
     def wrap_test_step_jit(self, data):
         return self.test_step_fcn(data)
 
-    @tf.function(jit_compile=False, reduce_retracing=True)
+    # @tf.function(jit_compile=False, reduce_retracing=True)
     def wrap_test_step_njit(self, data):
         return self.test_step_fcn(data)
 
@@ -320,14 +320,14 @@ class PINNGravityModel(tf.keras.Model):
                 y = tf.concat((y, y_batch), axis=0)
         return y
 
-    @tf.function(jit_compile=False, reduce_retracing=True)
+    # @tf.function(jit_compile=False, reduce_retracing=True)
     def compute_potential(self, x):
         x_input = self.x_preprocessor(x)
         u_pred = self.network(x_input, training=False)
         u = self.u_postprocessor(u_pred)
         return u
 
-    @tf.function(jit_compile=False, reduce_retracing=True)
+    # @tf.function(jit_compile=False, reduce_retracing=True)
     def compute_disturbing_potential(self, x):
         x_input = self.x_preprocessor(x)
         u_pred = self.network(x_input, training=False)
@@ -341,16 +341,16 @@ class PINNGravityModel(tf.keras.Model):
         x_input = self.x_preprocessor(x)
         return x_input
 
-    @tf.function(jit_compile=True)
+    # @tf.function(jit_compile=True)
     def postprocess(self, x):
         x_input = self.a_postprocessor(x)
         return x_input
 
-    @tf.function(jit_compile=False, reduce_retracing=True)
+    # @tf.function(jit_compile=False, reduce_retracing=True)
     def compute_acceleration(self, x):
         return self._compute_acceleration(x)
 
-    @tf.function(jit_compile=False, reduce_retracing=True)
+    # @tf.function(jit_compile=False, reduce_retracing=True)
     def compute_dU_dxdx(self, x):
         return self._compute_dU_dxdx(x)
 
