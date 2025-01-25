@@ -381,11 +381,11 @@ class PINNGravityModel(tf.keras.Model):
         a = pinn_00(self.network, x, training=False)["acceleration"]
         return a
 
-    @tf.function(jit_compile=True)
+    # @tf.function(jit_compile=True)
     def _network_potential(self, x, training):
         return self.network(x, training=training)
 
-    @tf.function(jit_compile=False, reduce_retracing=True)
+    # @tf.function(jit_compile=False, reduce_retracing=True)
     def _pinn_acceleration_output(self, x):
         x_inputs = x
         with tf.GradientTape(watch_accessed_variables=False) as tape:
@@ -410,7 +410,7 @@ class PINNGravityModel(tf.keras.Model):
         jacobian = g1.batch_jacobian(a, x_inputs)
         return jacobian
 
-    @tf.function(jit_compile=False, reduce_retracing=True)
+    # @tf.function(jit_compile=False, reduce_retracing=True)
     def _nn_acceleration_jacobian(self, x):
         with tf.GradientTape() as g2:
             g2.watch(x)
