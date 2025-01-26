@@ -686,7 +686,7 @@ class DataSet:
             dataset = dataset.shuffle(len(x), seed=1234)
         dataset = dataset.batch(
             batch_size,
-            num_parallel_calls=tf.data.experimental.AUTOTUNE,
+#            num_parallel_calls=tf.data.experimental.AUTOTUNE,
         )
         dataset = dataset.apply(tf.data.experimental.copy_to_device("/gpu:0"))
         dataset = dataset.prefetch(tf.data.experimental.AUTOTUNE)
