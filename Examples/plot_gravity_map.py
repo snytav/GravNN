@@ -13,7 +13,7 @@ from GravNN.Visualization.PlanesVisualizer import PlanesVisualizer
 
 def main():
     # Load a PINN Model
-    df = pd.read_pickle("Data/Dataframes/example_training.data")
+    df = pd.read_csv("vis.csv")
     model_id = df["id"].values[-1]
     config, model = load_config_and_model(df, model_id)
 
