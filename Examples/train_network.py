@@ -65,6 +65,29 @@ def run(config):
     saver = ModelSaver(model, history)
     saver.save(df_file=None)
 
+    #===========================================
+    import matplotlib.pyplot as plt
+    import pandas as pd
+    from GravNN.Analysis.PlanesExperiment import PlanesExperiment
+    from GravNN.CelestialBodies.Asteroids import Eros
+    from GravNN.GravityModels.Polyhedral import Polyhedral
+    from GravNN.Networks.Model import load_config_and_model
+    from GravNN.Support.Grid import Grid
+    from GravNN.Trajectories import DHGridDist
+    from GravNN.Visualization.MapBase import MapBase
+    from GravNN.Visualization.PlanesVisualizer import PlanesVisualizer
+
+    planet = config["planet"][0]
+    radius_bounds = [-planet.radius * 3, planet.radius * 3]
+    max_percent = 25
+    planes_exp = PlanesExperiment(model, config, radius_bounds, 30)
+    planes_exp.run()
+    vis = PlanesVisualizer(planes_exp)
+    vis.plot(percent_max=max_percent)
+
+    plt.show()
+    #===========================================
+
     # Appends the model config to a perscribed df
     return model.config
 
