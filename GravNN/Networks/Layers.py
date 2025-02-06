@@ -270,6 +270,8 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         # External
         # Compute point mass approximation assuming
         u_pm_external = self.mu * r_inv_cap
+        write_array('analytic', 'u_pm_external', global_epoch_number, u_pm_external)
+
         u_C20 = (
             (self.a * r_inv_cap) ** 2
             * u_pm_external
@@ -277,6 +279,7 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
             * self.C20
         )
         u_external_full = tf.negative(u_pm_external + u_C20)
+        write_array('analytic', 'u_pm_external_full', global_epoch_number, u_nm_external_full)
 
         # Internal
         u_external_pm_boundary = self.mu / self.a
