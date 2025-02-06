@@ -4,6 +4,16 @@ import tensorflow as tf
 from GravNN.Networks.Losses import norm
 
 
+def write_array(layer_name,array_name, n_epoch,arr):
+
+    try:
+        fname = layer_name + '_' + array_name + '_' + '{:05d}'.format(n_epoch) + '.txt'
+        np.savetxt(fname, arr, fmt='%25.15e')
+    except:
+        print("An exception occurred")
+
+
+
 
 
 def get_preprocess_layer_fcn(layer_key):
@@ -167,17 +177,11 @@ class Cart2PinesSphLayer(tf.keras.layers.Layer):
         # u = Z / r  # sin(alpha)
         from GravNN.Networks.Constraints import global_epoch_number
 
-        try:
-            np.savetxt('cart_input_'+'{:05d}'.format(global_epoch_number)+'.txt', inputs,fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        write_array('cart','input', global_epoch_number,inputs)
         r = norm(inputs)
         stu = tf.math.divide_no_nan(inputs, r)
         spheres = tf.concat([r, stu], axis=1)
-        try:
-            np.savetxt('cart_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres,fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        write_array('cart', 'output', global_epoch_number, spheres)
 
         return spheres
 
@@ -192,16 +196,13 @@ class InvRLayer(tf.keras.layers.Layer):
 
     def call(self, inputs):
         from GravNN.Networks.Constraints import global_epoch_number
-        try:
-            np.savetxt('inv_r_input_' + '{:05d}'.format(global_epoch_number) + '.txt', inputs, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        write_array('inv','input', global_epoch_number,inputs)
+
         r = inputs[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
         spheres = tf.concat([r_cap, r_inv_cap, inputs[:, 1:4]], axis=1)
-        try:
-            np.savetxt('inv_r_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres[:,:3],fmt='%25.15e')
-        except:
+        write_array('inv','output', global_epoch_number,spheres[:,:3])
+
             print("An exception occurred")
         return spheres[:,:3]
 
@@ -259,11 +260,7 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
 
     def call(self, inputs):
         from GravNN.Networks.Constraints import global_epoch_number
-        try:
-            np.savetxt('analytic_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       inputs, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        write_array('analytic','input',global_epoch_number,inputs)
 
         r = inputs[:, 0:1]
         u = inputs[:, 3:4]
@@ -299,11 +296,7 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         h_external = H(r, self.r_external, self.k_external)
         u_analytic = u_analytic * h_external
 
-        try:
-            np.savetxt('analytic_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_analytic, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        write_array('analytic','output',global_epoch_number,u_analytic)
 
 
         return u_analytic
@@ -373,13 +366,8 @@ class ScaleNNPotential(tf.keras.layers.Layer):
 
     def call(self, features, u_nn):
         from GravNN.Networks.Constraints import global_epoch_number
-        try:
-            np.savetxt('scale_nn_features_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       features, fmt='%25.15e')
-            np.savetxt('scale_nn_u_nn_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_nn, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        write_array('scale','features_input',global_epoch_number,features)
+        write_array('scale','u_nn_input',u_nn)
 
         r = features[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
@@ -404,12 +392,7 @@ class ScaleNNPotential(tf.keras.layers.Layer):
         # scale = blend_smooth(r, scale_internal, scale_external, R_trans, 2*R_trans)
         # u_final = u_nn * scale
         u_final = u_nn * scale_external
-        try:
-            np.savetxt('scale_nn_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_final, fmt='%25.15e')
-
-        except:
-            print("An exception occurred")
+        write_array('scale','output',global_epoch_number,u_final)
 
         return u_final
 
@@ -437,21 +420,14 @@ class FuseModels(tf.keras.layers.Layer):
     def call(self, u_nn, u_analytic):
         from GravNN.Networks.Constraints import global_epoch_number
 
-        try:
-            np.savetxt('fuse_input_u_nn_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_nn, fmt='%25.15e')
-            np.savetxt('fuse_input_u_analytic_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_analytic, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        write_array('fuse','input_u_nn',global_epoch_number,u_nn)
+        write_array('fuse','input_u_analytic',global_epoch_number,u_analytic)
+
+
         fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
         u = u_nn + fuse_vector * u_analytic
-        try:
-            np.savetxt('fuse_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u, fmt='%25.15e')
-        except:
-            print("An exception occurred")
-        fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
+        write_array('fuse','output',global_epoch_number,u)
+                fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
 
         return u
 
@@ -499,14 +475,8 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
 
     def call(self, features, u_nn, u_analytic):
         from GravNN.Networks.Constraints import global_epoch_number
-        try:
-            np.savetxt('enforce_input_analytic_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_analytic, fmt='%25.15e')
-            np.savetxt('enforce_input_u_nn_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_nn, fmt='%25.15e')
-
-        except:
-            print("An exception occurred")
+        write_array('enf','input_analytic',global_epoch_number,u_analytic)
+        write_array('enf','input_u_nn',global_epoch_number,u_nn)
 
         if not self.enforce_bc:
             return u_nn
@@ -515,11 +485,9 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         g = G(r, self.radius, self.k)
         u_model = g * u_nn + h * u_analytic
 
-        try:
-            np.savetxt('enforce_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_model, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        write_array('enf','output',global_epoch_number,u_model)
+
+
         return u_model
 
     def get_config(self):
@@ -556,7 +524,7 @@ class FourierFeatureLayer(tf.keras.layers.Layer):
         self.fourier_sigma = fourier_sigma
         self.freq_decay = freq_decay
         self.trainable = trainable
-        self.shared_freq = shared_freq
+        self.shared_farrareq = shared_freq
         self.shared_offset = shared_offset
         self.sine_and_cosine = sine_and_cosine
         self.base_2_init = base_2_init
