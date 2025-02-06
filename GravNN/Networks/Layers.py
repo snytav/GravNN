@@ -203,7 +203,6 @@ class InvRLayer(tf.keras.layers.Layer):
         spheres = tf.concat([r_cap, r_inv_cap, inputs[:, 1:4]], axis=1)
         write_array('inv','output', global_epoch_number,spheres[:,:3])
 
-            print("An exception occurred")
         return spheres[:,:3]
 
     def get_config(self):
@@ -279,7 +278,8 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
             * self.C20
         )
         u_external_full = tf.negative(u_pm_external + u_C20)
-        write_array('analytic', 'u_pm_external_full', global_epoch_number, u_nm_external_full)
+
+        write_array('analytic', 'u_pm_external_full', global_epoch_number, u_external_full)
 
         # Internal
         u_external_pm_boundary = self.mu / self.a
@@ -370,7 +370,7 @@ class ScaleNNPotential(tf.keras.layers.Layer):
     def call(self, features, u_nn):
         from GravNN.Networks.Constraints import global_epoch_number
         write_array('scale','features_input',global_epoch_number,features)
-        write_array('scale','u_nn_input',u_nn)
+        write_array('scale','u_nn_input',global_epoch_number,u_nn)
 
         r = features[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
@@ -430,7 +430,8 @@ class FuseModels(tf.keras.layers.Layer):
         fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
         u = u_nn + fuse_vector * u_analytic
         write_array('fuse','output',global_epoch_number,u)
-                fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
+
+        fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
 
         return u
 
