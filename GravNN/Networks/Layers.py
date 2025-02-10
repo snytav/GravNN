@@ -265,6 +265,8 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         u = inputs[:, 3:4]
 
         r_cap, r_inv_cap = r_safety_set(r)
+        write_array('analytic', 'r_cap', global_epoch_number,r_cap)
+        write_array('analytic', 'r_inv_cap', global_epoch_number, r_inv_cap)
 
         # External
         # Compute point mass approximation assuming
@@ -481,6 +483,7 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         from GravNN.Networks.Constraints import global_epoch_number
         write_array('enf','input_analytic',global_epoch_number,u_analytic)
         write_array('enf','input_u_nn',global_epoch_number,u_nn)
+        write_array('enf', 'input_features', global_epoch_number, features)
 
         if not self.enforce_bc:
             return u_nn
