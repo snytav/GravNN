@@ -86,17 +86,17 @@ def pinn_A(f, x, training):
         global_epoch_number = global_epoch_number + 1
         #print(u)
 
-    global_epoch_number = -10
-    l0 = f.layers[0]
-    y0 = l0(x)
-    l1 = f.layers[1]
-    y1 = l1(y0)
-    l2 = f.layers[2]
-    y2 = l2(y0)
-    l3 = f.layers[3]
-    y3 = l3(y2)
-    l4 = f.layers[4]
-    y4 = l4(y3)
+    # global_epoch_number = -10
+    # l0 = f.layers[0]
+    # y0 = l0(x)
+    # l1 = f.layers[1]
+    # y1 = l1(y0)
+    # l2 = f.layers[2]
+    # y2 = l2(y0)
+    # l3 = f.layers[3]
+    # y3 = l3(y2)
+    # l4 = f.layers[4]
+    # y4 = l4(y3)
 
 
 
