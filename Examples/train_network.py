@@ -61,6 +61,9 @@ def run(config):
     # Get data, network, optimizer, and generate model
     data = DataSet(config)
     model = PINNGravityModel(config)
+    from GravNN.Networks.Constraints import global_epoch_number,global_training_log
+    global_epoch_number = 0
+    global_training_log = open("log.txt", "a")
     history = model.train(data)
     saver = ModelSaver(model, history)
     saver.save(df_file=None)

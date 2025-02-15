@@ -195,8 +195,13 @@ class PINNGravityModel(tf.keras.Model):
             loss_i = tf.stack([tf.reduce_mean(loss) for loss in losses.values()], 0)
             loss = tf.reduce_sum(self.w_loss * loss_i)
             from GravNN.Networks.Constraints import global_epoch_number
-            print('+++++++++++++++++++++++++++++++++++++ epoch, loss ',global_epoch_number,loss.numpy())
+            from GravNN.Networks.Constraints import global_training_log
+
+            global_training_log.write('+++++++++++++++++++++++++++++++++++++ epoch %010d loss %15.5e'%(global_epoch_number,loss.numpy()))
+            print(' epoch loss ',global_epoch_number, loss.numpy())
             loss = self.optimizer.get_scaled_loss(loss)
+            from GravNN.Networks.Constraints import global_training_log
+            global_training_log.close()
             # tf.print(loss_i)
             # compute a subset of the losses for w_loss
             # update. Needs to be selected within tape

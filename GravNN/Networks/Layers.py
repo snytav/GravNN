@@ -3,6 +3,8 @@ import tensorflow as tf
 
 from GravNN.Networks.Losses import norm
 
+from GravNN.Networks.Constraints import global_training_log
+
 
 def write_array(layer_name,array_name, n_epoch,arr):
 
@@ -260,7 +262,13 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
     def call(self, inputs):
         from GravNN.Networks.Constraints import global_epoch_number
         write_array('analytic','input',global_epoch_number,inputs)
-        print('epoch, analytic self.r_external ',global_epoch_number,self.r_external)
+        try:
+            from GravNN.Networks.Constraints import global_training_log
+            if not (global_training_log is None):
+                #global_training_log.write('%d r_external %15.5e ' % (global_epoch_number, self.r_external.numpy()[0]))
+                global_training_log.write('epoch %010d analytic self.r_external %15.5e'%(global_epoch_number,self.r_external.numpy()[0]))
+        except:
+              print('file exception')
         r = inputs[:, 0:1]
         u = inputs[:, 3:4]
 
@@ -484,7 +492,7 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         write_array('enf','input_analytic',global_epoch_number,u_analytic)
         write_array('enf','input_u_nn',global_epoch_number,u_nn)
         write_array('enf', 'input_features', global_epoch_number, features)
-        print('epoch, enforce self.k ',global_epoch_number,self.k)
+        print('epoch, enforce self.k ',global_epoch_number,self.k.numpy()[0])
         if not self.enforce_bc:
             return u_nn
         r = features[:, 0:1]
@@ -493,7 +501,17 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         u_model = g * u_nn + h * u_analytic
 
         write_array('enf','output',global_epoch_number,u_model)
-
+        from GravNN.Networks.Constraints import global_epoch_number
+        write_array('analytic', 'input', global_epoch_number, features)
+        try:
+            from GravNN.Networks.Constraints import global_training_log
+            if not (global_training_log is None):
+                # global_training_log.write('%d r_external %15.5e ' % (global_epoch_number, self.r_external.numpy()[0]))
+                global_training_log.write(
+                    'epoch %010d analytic self.radius %15.5e' %
+                    (global_epoch_number, self.radius.numpy()[0]))
+        except:
+            print('file exception')
 
         return u_model
 

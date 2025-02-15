@@ -5,6 +5,7 @@ from collections import OrderedDict
 import tensorflow as tf
 
 global_epoch_number = None
+global_training_log = None
 
 def get_PI_constraint(value):
     """Method responsible for getting all variables / methods used in the physics informed constraint.
@@ -70,7 +71,9 @@ import numpy as np
 def pinn_A(f, x, training):
 
     global global_epoch_number
-    global_epoch_number = 0
+    global global_training_log
+    #global_epoch_number = 0
+    global_training_log = open("log.txt", "a")
 
     n = 0
     np.savetxt('input.txt',x.numpy(),fmt='%25.15e')
