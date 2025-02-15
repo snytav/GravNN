@@ -86,7 +86,10 @@ def pinn_A(f, x, training):
         tape.watch(x)
         u = f(x, training=training)      # breaks here
         from GravNN.Networks.Constraints import global_epoch_number
-        global_epoch_number = global_epoch_number + 1
+        if global_epoch_number is None:
+            global_epoch_number = 0
+        else:
+            global_epoch_number = global_epoch_number + 1
         #print(u)
 
     # global_epoch_number = -10

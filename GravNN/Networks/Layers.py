@@ -492,7 +492,7 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         write_array('enf','input_analytic',global_epoch_number,u_analytic)
         write_array('enf','input_u_nn',global_epoch_number,u_nn)
         write_array('enf', 'input_features', global_epoch_number, features)
-        print('epoch, enforce self.k ',global_epoch_number,self.k.numpy()[0])
+        # print('epoch, enforce self.k ',global_epoch_number,self.k.numpy()[0])
         if not self.enforce_bc:
             return u_nn
         r = features[:, 0:1]
