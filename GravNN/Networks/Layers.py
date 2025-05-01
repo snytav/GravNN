@@ -4,6 +4,16 @@ import tensorflow as tf
 from GravNN.Networks.Losses import norm
 
 
+def write_control_point(layer_name,name,values):
+    from GravNN.Networks.Constraints import global_epoch_number
+
+    fname = layer_name + '_' + name
+    try:
+        fname += '_' + '{:05d}'.format(global_epoch_number) + '.txt'
+        np.savetxt(fname,values, fmt='%25.15e')
+    except:
+        print("An exception occurred")
+
 
 
 def get_preprocess_layer_fcn(layer_key):
@@ -198,6 +208,7 @@ class InvRLayer(tf.keras.layers.Layer):
             print("An exception occurred")
         r = inputs[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
+
         spheres = tf.concat([r_cap, r_inv_cap, inputs[:, 1:4]], axis=1)
         try:
             np.savetxt('inv_r_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres[:,:3],fmt='%25.15e')
@@ -269,6 +280,8 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         u = inputs[:, 3:4]
 
         r_cap, r_inv_cap = r_safety_set(r)
+        write_control_point('analytic','r_cap',r_cap)
+        write_control_point('analytic', 'r_inv_cap', r_inv_cap)
 
         # External
         # Compute point mass approximation assuming
