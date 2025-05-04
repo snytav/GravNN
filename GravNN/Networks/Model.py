@@ -571,5 +571,7 @@ def load_config_and_model(
         None,
     )
     model.compile(optimizer=optimizer, loss="mse")
+    # tensorboard = TensorBoard(log_dir="/home/snytav"+"{}".format(time()), write_graph=True,
+    #                           write_grads=True)
 
     return config, model
