@@ -382,6 +382,9 @@ def CustomNet(**kwargs):
         if layer.__name__ == "Cart2PinesSphLayer":
             features = x
 
+    # global global_epoch_number
+    # global_epoch_number = 0
+
     u_nn = get_network_fcn(kwargs["network_arch"][0])(x, **kwargs)
 
     p = compute_p(**kwargs)

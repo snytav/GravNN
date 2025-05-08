@@ -150,6 +150,8 @@ class PINNGravityModel(tf.keras.Model):
 
     # Model call functions
     def call(self, x, training):
+        from GravNN.Networks.Constraints import global_epoch_number
+
         return self.eval(self.network, x, training)
 
     def call_analytic_model(self, x):

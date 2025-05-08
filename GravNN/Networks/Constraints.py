@@ -68,9 +68,9 @@ def pinn_P(f, x, training):
 
 import numpy as np
 def pinn_A(f, x, training):
-
     global global_epoch_number
-    #global_epoch_number = 0
+    global_epoch_number = 0
+
 
     n = 0
     np.savetxt('input.txt',x.numpy(),fmt='%25.15e')
