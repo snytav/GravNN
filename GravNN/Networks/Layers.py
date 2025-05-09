@@ -4,6 +4,9 @@ import tensorflow as tf
 from GravNN.Networks.Losses import norm
 
 
+layer_sequence_index = 0
+
+
 
 
 def get_preprocess_layer_fcn(layer_key):
