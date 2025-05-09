@@ -214,18 +214,21 @@ class InvRLayer(tf.keras.layers.Layer):
         super(InvRLayer, self).__init__(dtype=dtype)
 
     def call(self, inputs):
-        from GravNN.Networks.Constraints import global_epoch_number
-        try:
-            np.savetxt('inv_r_input_' + '{:05d}'.format(global_epoch_number) + '.txt', inputs, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        # from GravNN.Networks.Constraints import global_epoch_number
+        # try:
+        #     np.savetxt('inv_r_input_' + '{:05d}'.format(global_epoch_number) + '.txt', inputs, fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
+        write_control_point('inv_r','input',inputs)
+
         r = inputs[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
         spheres = tf.concat([r_cap, r_inv_cap, inputs[:, 1:4]], axis=1)
-        try:
-            np.savetxt('inv_r_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres[:,:3],fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        # try:
+        #     np.savetxt('inv_r_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres[:,:3],fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
+        write_control_point('inv_r','output',spheres[:,:3])
         return spheres[:,:3]
 
     def get_config(self):
@@ -281,12 +284,13 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         super(AnalyticModelLayer, self).build(input_shapes)
 
     def call(self, inputs):
-        from GravNN.Networks.Constraints import global_epoch_number
-        try:
-            np.savetxt('analytic_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       inputs, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        # from GravNN.Networks.Constraints import global_epoch_number
+        # try:
+        #     np.savetxt('analytic_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                inputs, fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
+        write_control_point('analytic','input',inputs)
 
         r = inputs[:, 0:1]
         u = inputs[:, 3:4]
@@ -322,11 +326,12 @@ class AnalyticModelLayer(tf.keras.layers.Layer):
         h_external = H(r, self.r_external, self.k_external)
         u_analytic = u_analytic * h_external
 
-        try:
-            np.savetxt('analytic_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_analytic, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        # try:
+        #     np.savetxt('analytic_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                u_analytic, fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
+        write_control_point('analytic','output',u_analytic)
 
 
         return u_analytic
@@ -396,13 +401,15 @@ class ScaleNNPotential(tf.keras.layers.Layer):
 
     def call(self, features, u_nn):
         from GravNN.Networks.Constraints import global_epoch_number
-        try:
-            np.savetxt('scale_nn_features_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       features, fmt='%25.15e')
-            np.savetxt('scale_nn_u_nn_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_nn, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        # try:
+        #     np.savetxt('scale_nn_features_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                features, fmt='%25.15e')
+        #     np.savetxt('scale_nn_u_nn_input_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                u_nn, fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
+        write_control_point('scale_nn','u_nn_input',u_nn)
+        write_control_point('scale_nn', 'features_input', features)
 
         r = features[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
@@ -427,12 +434,13 @@ class ScaleNNPotential(tf.keras.layers.Layer):
         # scale = blend_smooth(r, scale_internal, scale_external, R_trans, 2*R_trans)
         # u_final = u_nn * scale
         u_final = u_nn * scale_external
-        try:
-            np.savetxt('scale_nn_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_final, fmt='%25.15e')
-
-        except:
-            print("An exception occurred")
+        # try:
+        #     np.savetxt('scale_nn_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                u_final, fmt='%25.15e')
+        #
+        # except:
+        #     print("An exception occurred")
+        write_control_point('scale_nn', 'output',u_final)
 
         return u_final
 
@@ -460,20 +468,23 @@ class FuseModels(tf.keras.layers.Layer):
     def call(self, u_nn, u_analytic):
         from GravNN.Networks.Constraints import global_epoch_number
 
-        try:
-            np.savetxt('fuse_input_u_nn_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_nn, fmt='%25.15e')
-            np.savetxt('fuse_input_u_analytic_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_analytic, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        # try:
+        #     np.savetxt('fuse_input_u_nn_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                u_nn, fmt='%25.15e')
+        #     np.savetxt('fuse_input_u_analytic_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                u_analytic, fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
+        write_control_point('fuse','input_u_nn',u_nn)
+        write_control_point('fuse', 'input_u_analytic', u_analytic)
         fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
         u = u_nn + fuse_vector * u_analytic
-        try:
-            np.savetxt('fuse_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        # try:
+        #     np.savetxt('fuse_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                u, fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
+        write_control_point('fuse','output',u)
         fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
 
         return u
@@ -522,14 +533,16 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
 
     def call(self, features, u_nn, u_analytic):
         from GravNN.Networks.Constraints import global_epoch_number
-        try:
-            np.savetxt('enforce_input_analytic_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_analytic, fmt='%25.15e')
-            np.savetxt('enforce_input_u_nn_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_nn, fmt='%25.15e')
-
-        except:
-            print("An exception occurred")
+        # try:
+        #     np.savetxt('enforce_input_analytic_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                u_analytic, fmt='%25.15e')
+        #     np.savetxt('enforce_input_u_nn_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                u_nn, fmt='%25.15e')
+        #
+        # except:
+        #     print("An exception occurred")
+        write_control_point('enforce','input_u_nn',u_nn)
+        write_control_point('enforce', 'input_analytic', u_analytic)
 
         if not self.enforce_bc:
             return u_nn
@@ -538,11 +551,12 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         g = G(r, self.radius, self.k)
         u_model = g * u_nn + h * u_analytic
 
-        try:
-            np.savetxt('enforce_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
-                       u_model, fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        # try:
+        #     np.savetxt('enforce_output_' + '{:05d}'.format(global_epoch_number) + '.txt',
+        #                u_model, fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
+        write_control_point('enforce','output',u_model)
         return u_model
 
     def get_config(self):
