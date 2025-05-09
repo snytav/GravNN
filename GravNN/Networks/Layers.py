@@ -21,9 +21,8 @@ def write_control_point(layer_name,phase_name,x):
        print('exception in write_control_point')
 
     if phase_name == 'output':
-
-
         layer_sequence_index = layer_sequence_index + 1
+        qq = 0
 
 
 
@@ -197,10 +196,11 @@ class Cart2PinesSphLayer(tf.keras.layers.Layer):
         r = norm(inputs)
         stu = tf.math.divide_no_nan(inputs, r)
         spheres = tf.concat([r, stu], axis=1)
-        try:
-            np.savetxt('cart_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres,fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        # try:
+        #     np.savetxt('cart_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres,fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
+        write_control_point('cart','output',spheres)
 
         return spheres
 
