@@ -2,20 +2,28 @@ import numpy as np
 import tensorflow as tf
 
 from GravNN.Networks.Losses import norm
+from GravNN.Networks.Constraints import layer_sequence_index
+global layer_sequence_index
 
 
-layer_sequence_index = 0
+
 
 
 def write_control_point(layer_name,phase_name,x):
-    from GravNN.Networks.Constraints import global_epoch_number,layer_index
-    fname = layer_name+'_'+phase_name+(
-                 '{:05d}'.format(global_epoch_number)+
-         + '_lnum_' + '{:05d}'.format(layer_index))+ '.txt'
+    from GravNN.Networks.Constraints import global_epoch_number,layer_sequence_index
     try:
-       np.savetxt(fname, x, fmt='%25.15e')
+        fname = layer_name+'_'+phase_name+(
+                     '{:05d}'.format(global_epoch_number)+
+             '_lnum_' + '{:05d}'.format(layer_sequence_index))+ '.txt'
+
+        np.savetxt(fname, x, fmt='%25.15e')
     except:
        print('exception in write_control_point')
+
+    if phase_name == 'output':
+
+
+        layer_sequence_index = layer_sequence_index + 1
 
 
 
@@ -179,12 +187,13 @@ class Cart2PinesSphLayer(tf.keras.layers.Layer):
         # s = X / r  # sin(beta)
         # t = Y / r  # sin(gamma)
         # u = Z / r  # sin(alpha)
-        from GravNN.Networks.Constraints import global_epoch_number
-
-        try:
-            np.savetxt('cart_input_'+'{:05d}'.format(global_epoch_number)+'.txt', inputs,fmt='%25.15e')
-        except:
-            print("An exception occurred")
+        write_control_point('cart','input',inputs)
+        # from GravNN.Networks.Constraints import global_epoch_number
+        #
+        # try:
+        #     np.savetxt('cart_input_'+'{:05d}'.format(global_epoch_number)+'.txt', inputs,fmt='%25.15e')
+        # except:
+        #     print("An exception occurred")
         r = norm(inputs)
         stu = tf.math.divide_no_nan(inputs, r)
         spheres = tf.concat([r, stu], axis=1)
