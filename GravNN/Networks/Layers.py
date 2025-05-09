@@ -7,6 +7,17 @@ from GravNN.Networks.Losses import norm
 layer_sequence_index = 0
 
 
+def write_control_point(layer_name,phase_name,x):
+    from GravNN.Networks.Constraints import global_epoch_number,layer_index
+    fname = layer_name+'_'+phase_name+(
+                 '{:05d}'.format(global_epoch_number)+
+         + '_lnum_' + '{:05d}'.format(layer_index))+ '.txt'
+    try:
+       np.savetxt(fname, x, fmt='%25.15e')
+    except:
+       print('exception in write_control_point')
+
+
 
 
 def get_preprocess_layer_fcn(layer_key):
