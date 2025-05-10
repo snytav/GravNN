@@ -2,7 +2,7 @@ import numpy as np
 import tensorflow as tf
 
 from GravNN.Networks.Losses import norm
-from GravNN.Networks.Constraints import layer_sequence_index
+from GravNN.Networks.Constraints import global_epoch_number
 global layer_sequence_index
 
 
@@ -11,17 +11,26 @@ global layer_sequence_index
 
 def write_control_point(layer_name,phase_name,x):
     from GravNN.Networks.Constraints import global_epoch_number,layer_sequence_index
+    from time import time
+
+    timestamp = str(time())
+
+
     try:
         fname = layer_name+'_'+phase_name+(
                      '{:05d}'.format(global_epoch_number)+
-             '_lnum_' + '{:05d}'.format(layer_sequence_index))+ '.txt'
+             '_time_' + timestamp+ '.txt')
 
         np.savetxt(fname, x, fmt='%25.15e')
     except:
        print('exception in write_control_point')
 
     if phase_name == 'output':
-        layer_sequence_index = layer_sequence_index + 1
+        if layer_sequence_index is None:
+            if not (global_epoch_number is None):
+               layer_sequence_index = 0
+        else:
+            layer_sequence_index = layer_sequence_index + 1
         qq = 0
 
 

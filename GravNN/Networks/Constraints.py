@@ -5,7 +5,8 @@ from collections import OrderedDict
 import tensorflow as tf
 
 global_epoch_number = None
-layer_sequence_index = 0
+layer_sequence_index = None
+
 
 def get_PI_constraint(value):
     """Method responsible for getting all variables / methods used in the physics informed constraint.
@@ -70,7 +71,9 @@ def pinn_P(f, x, training):
 import numpy as np
 def pinn_A(f, x, training):
     global global_epoch_number
+    global layer_sequence_index
     global_epoch_number = 0
+    layer_sequence_index = 0
 
 
     n = 0
