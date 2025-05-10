@@ -228,7 +228,7 @@ class InvRLayer(tf.keras.layers.Layer):
         #     np.savetxt('inv_r_input_' + '{:05d}'.format(global_epoch_number) + '.txt', inputs, fmt='%25.15e')
         # except:
         #     print("An exception occurred")
-        write_control_point('inv_r','input',inputs)
+        write_control_point('inv','input',inputs)
 
         r = inputs[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
@@ -237,7 +237,7 @@ class InvRLayer(tf.keras.layers.Layer):
         #     np.savetxt('inv_r_output_'+'{:05d}'.format(global_epoch_number)+'.txt', spheres[:,:3],fmt='%25.15e')
         # except:
         #     print("An exception occurred")
-        write_control_point('inv_r','output',spheres[:,:3])
+        write_control_point('inv','output',spheres[:,:3])
         return spheres[:,:3]
 
     def get_config(self):
