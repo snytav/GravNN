@@ -417,8 +417,8 @@ class ScaleNNPotential(tf.keras.layers.Layer):
         #                u_nn, fmt='%25.15e')
         # except:
         #     print("An exception occurred")
-        write_control_point('scale_nn','u_nn_input',u_nn)
-        write_control_point('scale_nn', 'features_input', features)
+        write_control_point('scale','u_nn_input',u_nn)
+        write_control_point('scale', 'features_input', features)
 
         r = features[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
@@ -449,7 +449,7 @@ class ScaleNNPotential(tf.keras.layers.Layer):
         #
         # except:
         #     print("An exception occurred")
-        write_control_point('scale_nn', 'output',u_final)
+        write_control_point('scale', 'output',u_final)
 
         return u_final
 
