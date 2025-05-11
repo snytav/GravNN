@@ -417,8 +417,8 @@ class ScaleNNPotential(tf.keras.layers.Layer):
         #                u_nn, fmt='%25.15e')
         # except:
         #     print("An exception occurred")
-        write_control_point('scale','u_nn_input',u_nn)
-        write_control_point('scale', 'features_input', features)
+        write_control_point('scale','unn-input',u_nn)
+        write_control_point('scale', 'features-input', features)
 
         r = features[:, 0:1]
         r_cap, r_inv_cap = r_safety_set(r)
@@ -484,8 +484,8 @@ class FuseModels(tf.keras.layers.Layer):
         #                u_analytic, fmt='%25.15e')
         # except:
         #     print("An exception occurred")
-        write_control_point('fuse','input_u_nn',u_nn)
-        write_control_point('fuse', 'input_u_analytic', u_analytic)
+        write_control_point('fuse','input-unn',u_nn)
+        write_control_point('fuse', 'input-uanalytic', u_analytic)
         fuse_vector = tf.constant(self.fuse, dtype=u_nn.dtype)
         u = u_nn + fuse_vector * u_analytic
         # try:
@@ -550,8 +550,8 @@ class EnforceBoundaryConditions(tf.keras.layers.Layer):
         #
         # except:
         #     print("An exception occurred")
-        write_control_point('enforce','input_u_nn',u_nn)
-        write_control_point('enforce', 'input_analytic', u_analytic)
+        write_control_point('enforce','input-unn',u_nn)
+        write_control_point('enforce', 'input-uanalytic', u_analytic)
 
         if not self.enforce_bc:
             return u_nn
